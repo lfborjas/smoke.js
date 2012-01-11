@@ -56,6 +56,13 @@ var smoke = {
 					'<input id="dialog-input-'+f.newid+'" type="text" ' + (f.params.value ? 'value="' + f.params.value + '"' : '') + ' />'+
 				'</div>';
 		}
+		
+		if (f.type === 'password'){
+			prompt = 
+				'<div class="dialog-prompt">'+
+					'<input id="dialog-input-'+f.newid+'" type="password" ' + (f.params.value ? 'value="' + f.params.value + '"' : '') + ' />'+
+				'</div>';
+		}
 
 		if (f.params.ok){
 			ok = f.params.ok;
@@ -74,7 +81,7 @@ var smoke = {
 			if (f.type === 'alert'){
 				buttons +=
 					'<button id="alert-ok-'+f.newid+'">'+ok+'</button>';
-			} else if (f.type === 'prompt' || f.type === 'confirm'){
+			} else if (f.type === 'prompt' || f.type === 'confirm' || f.type === "password"){
 				if (f.params.reverseButtons) {
 					buttons +=
 						'<button id="'+f.type+'-ok-'+f.newid+'">'+ok+'</button>' +
@@ -132,7 +139,7 @@ var smoke = {
 			"click", 
 			function () {
 				smoke.destroy(f.type, f.newid);
-				if (f.type === 'prompt' || f.type === 'confirm'){
+				if (f.type === 'prompt' || f.type === 'confirm' || f.type === "password"){
 					f.callback(false);
 				} else if (f.type === 'alert' && typeof f.callback !== 'undefined') {
 					f.callback();
@@ -150,6 +157,9 @@ var smoke = {
 				smoke.finishbuildConfirm(e, f, box);
 				break;
 			case 'prompt':
+				smoke.finishbuildPrompt(e, f, box);
+				break;
+			case 'password':
 				smoke.finishbuildPrompt(e, f, box);
 				break;
 			case 'signal':
@@ -350,6 +360,14 @@ var smoke = {
 		
 		var id = smoke.newdialog();
 		return smoke.build(e,{type:'prompt',callback:f,params:g,newid:id});
+	},
+	password: function (e, f, g) {
+		if (typeof g !== 'object'){
+			g = false;
+		}
+		
+		var id = smoke.newdialog();
+		return smoke.build(e,{type:'password',callback:f,params:g,newid:id});
 	},
 	
 	listen: function (e, f, g) {
